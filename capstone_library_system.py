@@ -16,3 +16,46 @@ books = {
         {"book_id": "07-CO-2004", "name": "Resep Menu Simple", "year": 2004, "status": "available"},
     ]
 }
+
+# ==== BORROWED BOOK TRACKER ====
+borrowedBooks = []
+
+# ==== USER DATA ====
+users = {
+    "visitor": {"username": "visitor", "password": "visit123"},
+    "librarian": {"username": "librarian", "password": "lib123"}
+}
+
+# ==== PROGRAM FUNCTIONS
+
+
+def displayBooks():                     # Display All Books
+    print("\n=== DAFTAR BUKU ===")
+    for genre, book_list in books.items():
+        print(f"\n--- {genre.upper()} ---")
+        headers = ["Code", "Name", "Year", "Status"]
+        table = [[book["code"], book["name"], book["year"], book["status"]] for book in book_list]
+        print(tabulate(table, headers=headers, tablefmt="grid"))
+    print()
+
+
+
+def generateBookId(genre, year):        # Generate Book Code (digunakan untuk proses Create)
+    genreCode = genre[:2].upper()
+    nextId = len(books.get(genre, [])) + 1
+    return f"{nextId:02d}-{genreCode}-{year}"
+
+def borrowBook():
+    displayBooks()
+    name = input("Masukan nama buku yang ingin dipinjam: ")
+    
+    for genre, bookList in books.items():
+        for book in bookList:
+            if book["name"].lower() == name.lower():
+                if book["status"] == "available":
+                    book["status"] = "not available"
+                    borrowedBooks.append(book)
+                    print(f"\nBerhasil meminjam buku '{book['name']}'\n")
+                    return
+                else:
+                    print("\nMaaf, buku tidak tersedia.\n")
