@@ -33,8 +33,8 @@ def displayBooks():                     # Display All Books
     print("\n=== DAFTAR BUKU ===")
     for genre, book_list in books.items():
         print(f"\n--- {genre.upper()} ---")
-        headers = ["Code", "Name", "Year", "Status"]
-        table = [[book["code"], book["name"], book["year"], book["status"]] for book in book_list]
+        headers = ["Book Id", "Judul", "Tahun Publikasi", "Status"]
+        table = [[book["book_id"], book["name"], book["year"], book["status"]] for book in book_list]
         print(tabulate(table, headers=headers, tablefmt="grid"))
     print()
 
@@ -47,7 +47,7 @@ def generateBookId(genre, year):        # Generate Book Function (digunakan untu
 
 
 
-def addBook():                          # Add Book function (Proses Create)
+def addBook():                          # Add Book function (Proses Create) (Function ini khusus untuk user "Librarian")
     while True:
         genre = input("Masukkan genre buku baru:").capitalize()
         
@@ -82,10 +82,52 @@ def addBook():                          # Add Book function (Proses Create)
             "year": int(year),
             "status": "available"
         })
+        
+        print(f"\nBuku '{name}' berhasil ditambahkan ke genre {genre} dengan id {bookId}!")
+        
+        
+        while True:
+            repeat = input("Apakah anda ingin menambahkan buku lain? (ya/tidak): ").strip().lower()
+            if repeat != "ya":
+                print("\nKembali ke menu ...\n")
+                break
+            elif repeat == "tidak":
+                return
+            else:
+                print("Input tidak valid. Ketik 'ya' atau 'tidak'\n")
 
 
 
-def borrowBook():
+def removeBook():                   # Remove Book function (Proses Delete) (Function ini khusus untuk user "Librarian")
+    while True:
+        displayBooks()
+        name = input("Masukkan nama buku yang ingin dihapus: ")
+        
+        found = False
+        for genre, bookList in books.items():
+            for book in bookList:
+                if book["name"].lower() == name.lower():
+                    bookList.remove(book)
+                    print(f"\nBuku '{book['name']}' berhasil dihapus!\n")
+                    found = True
+                    break            
+            if found:
+                print("\nBuku tidak ditemukan.\n")
+        
+        while True:
+            repeat = input("Apakah anda ingin menghapus buku lain dari record? (ya/tidak): ").strip().lower()
+            if repeat != "ya":
+                print("\nKembali ke menu ...\n")
+                break
+            elif repeat == "tidak":
+                return
+            else:
+                print("Input tidak valid. Ketik 'ya' atau 'tidak'\n")  
+            
+
+
+
+def borrowBook():                   # Borrow Book function (Proses Update) (Function ini khusus untuk user "visitor")
     while True:
         displayBooks()
         name = input("Masukkan nama buku yang ingin dipinjam: ")
@@ -109,10 +151,44 @@ def borrowBook():
                 break
         if not found:
             print("\nBuku tidak ditemukan.\n")
+
+
+
+def returnBook():
+    if not borrowedBooks:
+        print("\nAnda belum meminjam buku apapun.\n")
+        return
+    
+    while True:
+        print("\n=== Buku Yang Anda Pinjam ===")
+        headers = ["Book Id", "Judul", "Tahun Publikasi"]
+        table = [[book["book_id"], book["name"], book["year"]] for book in borrowedBooks]
+        print(tabulate(table, headers=headers, tablefmt="grid"))
+        
+        name = input("Masukkan judul buku yang ingin dikembalikan: ").strip()
+        
+        found = False
+        for book in borrowedBooks:
+            if book["name"].lower() == name.lower():
+                book["status"] = "available"
+                borrowedBooks.remove(book)
+                print(f"\nBuku '{book['name']}' berhasil dikembalikan!\n")
+                found = True
+                break
             
-
-                
-                
-
-
-# 
+        if not found:
+            print("\nBuku tidak ditemukan dalam daftar pinjaman buku anda.\n")
+            
+        if not borrowedBooks:
+            print("Anda sudah mengembalikan semua buku.\n")
+            break
+        
+        while True:
+            repeat = input("Apakah anda ingin mengembalikan buku lain? (ya/tidak): ").strip().lower()
+            if repeat != "ya":
+                print("\nKembali ke menu ...\n")
+                break
+            elif repeat == "tidak":
+                return
+            else:
+                print("Input tidak valid. Ketik 'ya' atau 'tidak'\n")
