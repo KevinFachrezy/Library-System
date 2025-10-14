@@ -40,22 +40,79 @@ def displayBooks():                     # Display All Books
 
 
 
-def generateBookId(genre, year):        # Generate Book Code (digunakan untuk proses Create)
+def generateBookId(genre, year):        # Generate Book Function (digunakan untuk proses Create)
     genreCode = genre[:2].upper()
     nextId = len(books.get(genre, [])) + 1
     return f"{nextId:02d}-{genreCode}-{year}"
 
-def borrowBook():
-    displayBooks()
-    name = input("Masukan nama buku yang ingin dipinjam: ")
-    
-    for genre, bookList in books.items():
-        for book in bookList:
+
+
+def addBook():                          # Add Book function (Proses Create)
+    while True:
+        genre = input("Masukkan genre buku baru:").capitalize()
+        
+        if not genre.isalpha():
+            print("\Genre tidak boleh mengandung angka. Silahkan coba lagi!\n")
+            continue
+        
+        name = input("Masukkan nama buku baru: ").strip().title()
+        year = input("Masukkan tahun terbit: ")
+        
+        if not year.isdigit():
+            print("\nTahun terbit harus berupa angka. Silahkan coba lagi!")
+            continue
+        
+        if genre not in books:
+            books[genre] = []
+            
+        duplicate = False
+        for book in books[genre]:
             if book["name"].lower() == name.lower():
-                if book["status"] == "available":
-                    book["status"] = "not available"
-                    borrowedBooks.append(book)
-                    print(f"\nBerhasil meminjam buku '{book['name']}'\n")
-                    return
-                else:
-                    print("\nMaaf, buku tidak tersedia.\n")
+                print("\nBuku dengan nama tersebut sudah ada dalam genre ini.\n")
+                duplicate = True
+                break
+        
+        if duplicate:
+            continue
+        
+        bookId = generateBookId(genre, year)
+        books[genre].append({
+            "book_id": bookId,
+            "name": name,
+            "year": int(year),
+            "status": "available"
+        })
+
+
+
+def borrowBook():
+    while True:
+        displayBooks()
+        name = input("Masukkan nama buku yang ingin dipinjam: ")
+        if name.lower() == "selesai":
+            break
+        
+        found = False
+        for genre, bookList in books.items():
+            for book in bookList:
+                if book["name"].lower() == name.lower():
+                    found = True
+                    if book["status"] == "available":
+                        book["status"] = "not available"
+                        borrowedBooks.append(book)
+                        print(f"\nBerhasil meminjam buku '{book['name']}'\n")
+                        return
+                    else:
+                        print("\nMaaf, buku tidak tersedia.\n")
+                    break
+            if found:
+                break
+        if not found:
+            print("\nBuku tidak ditemukan.\n")
+            
+
+                
+                
+
+
+# 
