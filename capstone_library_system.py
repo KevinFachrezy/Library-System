@@ -39,7 +39,7 @@ def displayBooks():                     # Display All Books
             bookList, 
             key = lambda book: int(book["book_id"].split("-")[0])
             )
-        
+        # Kode untuk display book dengan fungsi built-in tabulate
         headers = ["Book Id", "Judul", "Tahun Publikasi", "Status"]
         table = [[book["book_id"], book["name"], book["year"], book["status"]] for book in sortView]
         print(tabulate(table, headers=headers, tablefmt="grid"))
@@ -48,25 +48,28 @@ def displayBooks():                     # Display All Books
 
 
 def generateBookId(genre, year):        # Generate Book Function (digunakan untuk proses Create)
+    # Kode untuk mencari genreCode (slicing 2 huruf pertama dari genre)
     genreCode = genre[:2].upper()
     bookList = books.get(genre, [])
     
+    # Kode untuk mencari book id
     existingId = [int(book["book_id"].split("-")[0]) for book in bookList]
     
+    # Kode If jika tidak ada book (untuk buku baru), else cari id yang missing dari sorted id
     if not existingId:
-        id = 1
+        nextId = 1
     else:
         maxId = max(existingId)
         possibleId = set(range(1, maxId + 2))
         missingId = sorted(list(possibleId - set(existingId)))
+        nextId = missingId[0] # jika 
         
-        nextId = missingId[0]
-        
-    if nextId in existingId:
+    if nextId in existingId: # if untuk mengecek duplikat id
         nextId = max(existingId) + 1
-    elif nextId == 0:
+    elif nextId == 0: # elif untuk mencegah id 00
         nextId = 1
-        
+    
+    # return id dengan format nextId-kode genre-tahun   
     return f"{nextId:02d}-{genreCode}-{year}"
 
 
@@ -181,7 +184,7 @@ def borrowBook():                   # Borrow Book function (Proses Update) (Func
 
 
 
-def viewBorrowedBooks():
+def viewBorrowedBooks():            # View Borrow Book function (Proses Read) (Function ini khusus untuk user "visitor")
     if not borrowedBooks:
         print("\nAnda belum meminjam buku apapun.\n")
     else:
@@ -241,6 +244,9 @@ def login():
 def logout():
     print("Kembali ke halaman login ...\n")
     return None
+
+
+
                     
 def mainMenu():
     user = None
