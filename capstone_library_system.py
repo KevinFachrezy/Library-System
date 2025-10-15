@@ -31,10 +31,17 @@ users = {
 # ==== PROGRAM FUNCTIONS
 def displayBooks():                     # Display All Books
     print("\n=== DAFTAR BUKU ===")
-    for genre, book_list in books.items():
+    for genre, bookList in books.items():
         print(f"\n--- {genre.upper()} ---")
+        
+        # Kode untuk sort based on book id
+        sortView = sorted(
+            bookList, 
+            key = lambda book: int(book["book_id"].split("-")[0])
+            )
+        
         headers = ["Book Id", "Judul", "Tahun Publikasi", "Status"]
-        table = [[book["book_id"], book["name"], book["year"], book["status"]] for book in book_list]
+        table = [[book["book_id"], book["name"], book["year"], book["status"]] for book in sortView]
         print(tabulate(table, headers=headers, tablefmt="grid"))
     print()
 
@@ -42,7 +49,24 @@ def displayBooks():                     # Display All Books
 
 def generateBookId(genre, year):        # Generate Book Function (digunakan untuk proses Create)
     genreCode = genre[:2].upper()
-    nextId = len(books.get(genre, [])) + 1
+    bookList = books.get(genre, [])
+    
+    existingId = [int(book["book_id"].split("-")[0]) for book in bookList]
+    
+    if not existingId:
+        id = 1
+    else:
+        maxId = max(existingId)
+        possibleId = set(range(1, maxId + 2))
+        missingId = sorted(list(possibleId - set(existingId)))
+        
+        nextId = missingId[0]
+        
+    if nextId in existingId:
+        nextId = max(existingId) + 1
+    elif nextId == 0:
+        nextId = 1
+        
     return f"{nextId:02d}-{genreCode}-{year}"
 
 
@@ -200,6 +224,8 @@ def returnBook():
 
 
 def login():
+    username = ""
+    password = ""
     for i in range(3):
         username = input("Masukkan username: ")
         password = input("Masukkan password: ")
@@ -209,18 +235,28 @@ def login():
         else:
             print("Username atau password salah.\n")
     print("Gagal login setelah 3 kali percobaan.")
+
+
+
+def logout():
+    print("Kembali ke halaman login ...\n")
+    return None
                     
 def mainMenu():
-    user = login()
-    
+    user = None
+        
     while True:
+        if user == None:
+            user = login()
+            
         if user == "visitor":
             print("\n === MENU VISITOR ===")
             print("1. Lihat daftar buku")
             print("2. Pinjam Buku")
             print("3. Kembalikan Buku")
             print("4. Lihat buku yang dipinjam")
-            print("5. Keluar")
+            print("5. Logout")
+            print("6. Keluar")
             pilih = input("Pilih menu: ")
             
             if pilih == "1":
@@ -232,6 +268,8 @@ def mainMenu():
             elif pilih == "4":
                 viewBorrowedBooks()
             elif pilih == "5":
+                user = logout()
+            elif pilih == "6":
                 print("\nTerima kasih telah menggunakan sistem perpustakaan.\n")
                 break
             else:
@@ -242,7 +280,8 @@ def mainMenu():
             print("1. Lihat daftar buku")
             print("2. Tambah Buku")
             print("3. Hapus Buku")
-            print("4. Keluar")
+            print("4. Logout")
+            print("5. Keluar")
             pilih = input("Pilih menu: ")
             
             if pilih == "1":
@@ -252,6 +291,8 @@ def mainMenu():
             elif pilih == "3":
                 removeBook()
             elif pilih == "4":
+                user = logout()
+            elif pilih == "5":
                 print("\nTerima kasih telah menggunakan sistem perpustakaan.\n")
                 break
             else:
