@@ -8,12 +8,12 @@ books = {
         {"book_id": "03-FI-2000", "name": "Tales From The Arabian Peninsula", "year": 2000, "status": "not available"},
     ],
     "Educational": [
-        {"book_id": "04-ED-2019", "name": "Introduction To Python Programming", "year": 2019, "status": "available"},
-        {"book_id": "05-ED-1995", "name": "Programming Fundamentals", "year": 1995, "status": "available"},
+        {"book_id": "01-ED-2019", "name": "Introduction To Python Programming", "year": 2019, "status": "available"},
+        {"book_id": "02-ED-1995", "name": "Programming Fundamentals", "year": 1995, "status": "available"},
     ],
     "Cooking": [
-        {"book_id": "06-CO-2010", "name": "100 Resep Tradisional", "year": 2010, "status": "available"},
-        {"book_id": "07-CO-2004", "name": "Resep Menu Simple", "year": 2004, "status": "available"},
+        {"book_id": "01-CO-2010", "name": "100 Resep Tradisional", "year": 2010, "status": "available"},
+        {"book_id": "02-CO-2004", "name": "Resep Menu Simple", "year": 2004, "status": "available"},
     ]
 }
 
@@ -26,9 +26,9 @@ users = {
     "librarian": {"username": "librarian", "password": "lib123"}
 }
 
+
+
 # ==== PROGRAM FUNCTIONS
-
-
 def displayBooks():                     # Display All Books
     print("\n=== DAFTAR BUKU ===")
     for genre, book_list in books.items():
@@ -52,7 +52,7 @@ def addBook():                          # Add Book function (Proses Create) (Fun
         genre = input("Masukkan genre buku baru:").capitalize()
         
         if not genre.isalpha():
-            print("\Genre tidak boleh mengandung angka. Silahkan coba lagi!\n")
+            print("\nGenre tidak boleh mengandung angka. Silahkan coba lagi!\n")
             continue
         
         name = input("Masukkan nama buku baru: ").strip().title()
@@ -88,10 +88,10 @@ def addBook():                          # Add Book function (Proses Create) (Fun
         
         while True:
             repeat = input("Apakah anda ingin menambahkan buku lain? (ya/tidak): ").strip().lower()
-            if repeat != "ya":
-                print("\nKembali ke menu ...\n")
+            if repeat == "ya":
                 break
             elif repeat == "tidak":
+                print("\nKembali ke menu ...\n")
                 return
             else:
                 print("Input tidak valid. Ketik 'ya' atau 'tidak'\n")
@@ -112,14 +112,17 @@ def removeBook():                   # Remove Book function (Proses Delete) (Func
                     found = True
                     break            
             if found:
-                print("\nBuku tidak ditemukan.\n")
+                break
+        
+        if not found:    
+            print("\nBuku tidak ditemukan.\n")
         
         while True:
             repeat = input("Apakah anda ingin menghapus buku lain dari record? (ya/tidak): ").strip().lower()
-            if repeat != "ya":
-                print("\nKembali ke menu ...\n")
+            if repeat == "ya":
                 break
             elif repeat == "tidak":
+                print("\nKembali ke menu ...\n")
                 return
             else:
                 print("Input tidak valid. Ketik 'ya' atau 'tidak'\n")  
@@ -154,17 +157,18 @@ def borrowBook():                   # Borrow Book function (Proses Update) (Func
 
 
 
-def returnBook():
+def viewBorrowedBooks():
     if not borrowedBooks:
         print("\nAnda belum meminjam buku apapun.\n")
-        return
-    
-    while True:
+    else:
         print("\n=== Buku Yang Anda Pinjam ===")
         headers = ["Book Id", "Judul", "Tahun Publikasi"]
         table = [[book["book_id"], book["name"], book["year"]] for book in borrowedBooks]
         print(tabulate(table, headers=headers, tablefmt="grid"))
-        
+
+
+def returnBook():
+    while True:     
         name = input("Masukkan judul buku yang ingin dikembalikan: ").strip()
         
         found = False
@@ -185,10 +189,75 @@ def returnBook():
         
         while True:
             repeat = input("Apakah anda ingin mengembalikan buku lain? (ya/tidak): ").strip().lower()
-            if repeat != "ya":
-                print("\nKembali ke menu ...\n")
+            if repeat == "ya":
                 break
             elif repeat == "tidak":
+                print("\nKembali ke menu ...\n")
                 return
             else:
                 print("Input tidak valid. Ketik 'ya' atau 'tidak'\n")
+
+
+
+def login():
+    for i in range(3):
+        username = input("Masukkan username: ")
+        password = input("Masukkan password: ")
+        if username in users and users[username]["password"] == password:
+            print(f"\nLogin berhasil! selamat datang di sistem perpustakaan, {username.capitalize()}")
+            return username
+        else:
+            print("Username atau password salah.\n")
+    print("Gagal login setelah 3 kali percobaan.")
+                    
+def mainMenu():
+    user = login()
+    
+    while True:
+        if user == "visitor":
+            print("\n === MENU VISITOR ===")
+            print("1. Lihat daftar buku")
+            print("2. Pinjam Buku")
+            print("3. Kembalikan Buku")
+            print("4. Lihat buku yang dipinjam")
+            print("5. Keluar")
+            pilih = input("Pilih menu: ")
+            
+            if pilih == "1":
+                displayBooks()
+            elif pilih == "2":
+                borrowBook()
+            elif pilih == "3":
+                returnBook()
+            elif pilih == "4":
+                viewBorrowedBooks()
+            elif pilih == "5":
+                print("\nTerima kasih telah menggunakan sistem perpustakaan.\n")
+                break
+            else:
+                print("\nPilihan tidak valid. Silahkan input pilihan yang sesuai menu.\n")
+        
+        elif user == "librarian":
+            print("\n === MENU LIBRARIAN ===")
+            print("1. Lihat daftar buku")
+            print("2. Tambah Buku")
+            print("3. Hapus Buku")
+            print("4. Keluar")
+            pilih = input("Pilih menu: ")
+            
+            if pilih == "1":
+                displayBooks()
+            elif pilih == "2":
+                addBook()
+            elif pilih == "3":
+                removeBook()
+            elif pilih == "4":
+                print("\nTerima kasih telah menggunakan sistem perpustakaan.\n")
+                break
+            else:
+                print("\nPilihan tidak valid. Silahkan input pilihan yang sesuai menu.\n")
+                
+                
+                
+# ==== PROGRAM INITIATE
+mainMenu()
