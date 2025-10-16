@@ -8,5 +8,7 @@ Dalam Sistem Library ini terdapat beberapa bagian penting yaitu:
 4. library functions            : Kumpulan functions yang menjadi inti dari Library System ini.
 
 Library System ini juga menggunakan salah satu python library yaitu **tabulate**.
+
 from tabulate import tabulate
+
 Tabulate ini digunakan untuk melakukan display table dalam format yang user-friendly.
