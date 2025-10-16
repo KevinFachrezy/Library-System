@@ -449,7 +449,7 @@ viewBorrowedBooks()
 
 ---
 
-## 7. Function `login()`
+## 8. Function `login()`
 
 ```python
 def login():
@@ -481,7 +481,7 @@ Function `login()` adalah function umum yang digunakan oleh semua user type untu
 
 ---
 
-## 7. Function `logout()`
+## 9. Function `logout()`
 
 ```python
 def logout():
@@ -500,7 +500,7 @@ print("Kembali ke halaman login ...\n")
 
 ---
 
-## 8. Function `mainMenu()`
+## 10. Function `mainMenu()`
 
 ```python
 def mainMenu():
