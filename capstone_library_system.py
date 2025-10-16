@@ -207,7 +207,8 @@ def viewBorrowedBooks():            # View Borrow Book function (Proses Read) (F
 
 
 def returnBook():                   # Return Book function (Proses Update) (Function ini khusus untuk user "visitor")
-    while True:     
+    while True:
+        viewBorrowedBooks()     
         name = input("Masukkan judul buku yang ingin dikembalikan: ").strip()
         
         found = False
