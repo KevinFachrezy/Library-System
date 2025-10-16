@@ -72,7 +72,7 @@ def generateBookId(genre, year):        # Generate Book Function (digunakan untu
         maxId = max(existingId)
         possibleId = set(range(1, maxId + 2))
         missingId = sorted(list(possibleId - set(existingId)))
-        nextId = missingId[0] # jika 
+        nextId = missingId[0]
         
     if nextId in existingId: # if untuk mengecek duplikat id
         nextId = max(existingId) + 1
