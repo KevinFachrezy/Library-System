@@ -102,7 +102,8 @@ def addBook():                          # Add Book function (Proses Create) (Fun
         # If genre tidak ada dalam dictionary, akan membuat genre baru
         if genre not in books:
             books[genre] = []
-            
+        
+        # Cek duplikasi judul    
         duplicate = False
         for book in books[genre]:
             if book["name"].lower() == name.lower():
@@ -171,7 +172,7 @@ def removeBook():                   # Remove Book function (Proses Delete) (Func
 def borrowBook():                   # Borrow Book function (Proses Update) (Function ini khusus untuk user "visitor")
     while True:
         displayBooks()
-        name = input("Masukkan nama buku yang ingin dipinjam: ")
+        name = input("Masukkan nama buku yang ingin dipinjam: (tulis 'selesai' untuk kembali ke menu)")
         if name.lower() == "selesai":
             break
         
