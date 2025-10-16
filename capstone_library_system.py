@@ -30,6 +30,17 @@ users = {
 
 # ==== PROGRAM FUNCTIONS
 def displayBooks():                     # Display All Books
+    # Cek apakah isi dalam genre kosong
+    isEmpty = []
+    # Looping dictionary books dan add genre yang tidak memiliki book
+    for genre, book in books.items():
+        if not book:
+            isEmpty.append(genre)
+    # Loop jika ada genre lain yang kosong
+    for genre in isEmpty:
+        del books[genre]  
+    
+    
     print("\n=== DAFTAR BUKU ===")
     for genre, bookList in books.items():
         print(f"\n--- {genre.upper()} ---")
@@ -89,6 +100,7 @@ def addBook():                          # Add Book function (Proses Create) (Fun
             print("\nTahun terbit harus berupa angka. Silahkan coba lagi!")
             continue
         
+        # If genre tidak ada dalam dictionary, akan membuat genre baru
         if genre not in books:
             books[genre] = []
             
@@ -194,7 +206,7 @@ def viewBorrowedBooks():            # View Borrow Book function (Proses Read) (F
         print(tabulate(table, headers=headers, tablefmt="grid"))
 
 
-def returnBook():
+def returnBook():                   # Return Book function (Proses Update) (Function ini khusus untuk user "visitor")
     while True:     
         name = input("Masukkan judul buku yang ingin dikembalikan: ").strip()
         
