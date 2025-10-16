@@ -17,6 +17,8 @@ Tabulate ini digunakan untuk melakukan display table dalam format yang user-frie
 
 # Penjelasan komponen sistem
 
+---
+
 ## 1. User data
 
 User data adalah tempat penyimpanan informasi user. User data ini nanti digunakan untuk mengakses Library System.
@@ -74,15 +76,124 @@ Dictionary ini akan diinisiasi empty.
 
 Functions adalah core logic dari Library System. Functions mengatur pengolahan data dan interaksi dengan user. Dalam Library System terdapat sepuluh function.
 
-- displayBook() → display semua buku yang ada di library
-- generatedBookId() → generate id buku baru
-- addBook() → menambah buku ke library
-- removeBook() → delete buku dari library
-- borrowBook() → meminjam buku dari library
-- viewBorrowBooks() → melihat buku yang telah dipinjam
-- returnBook() → mengembalikan buku yang dipinjam
-- login() → login akses ke dalam Library System
-- logout() → logout dari system
-- mainMenu() → menu utama untuk library system
+- `displayBook()` ****→ display semua buku yang ada di library
+- `generateBookId()` → generate id buku baru
+- `addBook()` → menambah buku ke library
+- `removeBook()` → delete buku dari library
+- `borrowBook()` → meminjam buku dari library
+- `viewBorrowBooks()` → melihat buku yang telah dipinjam
+- `returnBook()` → mengembalikan buku yang dipinjam
+- `login()` → login akses ke dalam Library System
+- `logout()` ****→ logout dari system
+- `mainMenu()` → menu utama untuk library system
 
 ---
+
+# Penjelasan Function
+
+---
+
+## 1. Function `displayBook()`
+
+```python
+def displayBooks()
+```
+
+Function `displayBooks()` digunakan untuk mendisplay semua buku dalam library. Dalam function ini digunakan For loop untuk melakukan iterasi book dictionary yang nantinya data dari looping akan ditampilkan menggunakan fitur dari `tabulate` 
+
+### displayBook main feature
+
+```python
+print("\n=== DAFTAR BUKU ===")
+    for genre, bookList in books.items():
+        print(f"\n--- {genre.upper()} ---")
+        
+        # Kode untuk sort based on book id
+        sortView = sorted(
+            bookList, 
+            key = lambda book: int(book["book_id"].split("-")[0])
+            )
+        # Kode untuk display book dengan fungsi built-in tabulate
+        headers = ["Book Id", "Judul", "Tahun Publikasi", "Status"]
+        table = [[book["book_id"], book["name"], book["year"], book["status"]] for book in sortView]
+        print(tabulate(table, headers=headers, tablefmt="grid"))
+```
+
+Dalam function ini buku akan ditampilkan berdasarkan genre dan **book_id** yang sudah disortir di variable `sortView` yang didalamnya menggunakan lambda function untuk melakukan pengambilan number dari book_id melalui perintah `.split(”-”)`
+
+### Contoh penggunaan
+
+```python
+{"book_id": "01-FI-2003", "name": "Kisah Legenda Indonesia", "year": 2003, "status": "available"},
+```
+
+Saat menggunakan `.split(”-”)` , book_id akan terpisah menjadi collection type `{”01”, “FI”, “2003”}`. Lalu akan diambil index 0 yaitu **“01”.**
+
+### displayBook empty checker
+
+Dalam function `displayBook()` ada juga fitur cek empty yang berfungsi untuk mengecek genre kosong dalam dictionary **`books`** 
+
+```python
+isEmpty = []
+    # Looping dictionary books dan add genre yang tidak memiliki book
+    for genre, book in books.items():
+        if not book:
+            isEmpty.append(genre)
+    # Loop jika ada genre lain yang kosong
+    for genre in isEmpty:
+        del books[genre]  
+```
+
+Kode ini akan membuat empty dictionary yang kemudian akan diisi melalui For loop yang mengecek isi dari dictionary `books` , jika tidak ada isi maka akan menambahkan genre kedalam `isEmpty` dan di delete dalam For loop kedua.
+
+---
+
+## 2. Function `generateBookId()`
+
+```python
+def generateBookId(genre, year): 
+```
+
+Fungsi ini digunakan untuk automasi pembuatan book_id saat penambahan buku. Fungsi ini menggunakan parameter genre dan year yang nantinya akan digunakan dalam pembuatan book_id.
+
+### generateBookId genre code slicing and find Id
+
+```python
+# Kode untuk mencari genreCode (slicing 2 huruf pertama dari genre)
+    genreCode = genre[:2].upper()
+    bookList = books.get(genre, [])
+```
+
+Dalam snippet ini, parameter `genre` akan dislicing dimana dua huruf pertama dalam nama genre akan dimbil dan dikapitalkan. Lalu `bookList`  akan mengambil nama `genre` dan isinya. `bookList` ini nantinya akan digunakan untuk For loop.
+
+```python
+# Kode untuk mencari book id
+    existingId = [int(book["book_id"].split("-")[0]) for book in bookList]
+```
+
+Setelah slicing dan pembuatan bookList, `existingId` akan digunakan untuk mencari book_id dengan cara membuat dictionary yang berisi angka id dari For loop `book` dalam `bookList` .
+
+### generateBookId bookId checking
+
+```python
+ # Kode If jika tidak ada book (untuk buku baru), else cari id yang missing dari sorted id
+    if not existingId:
+        nextId = 1
+    else:
+        maxId = max(existingId)
+        possibleId = set(range(1, maxId + 2))
+        missingId = sorted(list(possibleId - set(existingId)))
+        nextId = missingId[0]
+        
+    if nextId in existingId: # if untuk mengecek duplikat id
+        nextId = max(existingId) + 1
+    elif nextId == 0: # elif untuk mencegah id 00
+        nextId = 1
+```
+
+- Kode ini digunakan untuk mengecek Id buku. Jika `existingId` **kosong**, maka akan membuat `nextId` 1.
+- Jika function menemukan existingId maka akan dilakukan pencarian `possibleId` menggunakan `set` dengan `range 1 sampai maxId +2` .
+    - Dari hasil tersebut, `missingId` akan dicari dengan cara melakukan pengurangan set `possibleId` dengan `existingId`
+    - Hasil dari pengurangan set akan dijadikan list dan disorting. Lalu `nextId` akan menjadi **index 0** dari `missingId`.
+- Setelah mendapatkan `nextId`, fungsi If digunakan untuk mengecek apakah ada duplikasi dari Id. Jika ada `nextId` menjadi 1 lebih dari `existingId`.
+    - Jika `nextId` sama dengan 0 maka `nextId` akan diubah menjadi 1 untuk menghindari kode buku 00.
