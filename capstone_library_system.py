@@ -54,7 +54,6 @@ def displayBooks():                     # Display All Books
         headers = ["Book Id", "Judul", "Tahun Publikasi", "Status"]
         table = [[book["book_id"], book["name"], book["year"], book["status"]] for book in sortView]
         print(tabulate(table, headers=headers, tablefmt="grid"))
-    print()
 
 
 
