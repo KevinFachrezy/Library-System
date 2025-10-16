@@ -240,8 +240,8 @@ def returnBook():                   # Return Book function (Proses Update) (Func
 
 
 def login():
-    username = ""
-    password = ""
+    username = None
+    password = None
     for i in range(3):
         username = input("Masukkan username: ")
         password = input("Masukkan password: ")
