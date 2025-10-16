@@ -86,7 +86,7 @@ def generateBookId(genre, year):        # Generate Book Function (digunakan untu
 
 def addBook():                          # Add Book function (Proses Create) (Function ini khusus untuk user "Librarian")
     while True:
-        genre = input("Masukkan genre buku baru:").capitalize()
+        genre = input("Masukkan genre buku baru:").title()
         
         if not genre.isalpha():
             print("\nGenre tidak boleh mengandung angka. Silahkan coba lagi!\n")
