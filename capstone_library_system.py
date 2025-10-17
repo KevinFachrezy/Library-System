@@ -146,6 +146,9 @@ def removeBook():                   # Remove Book function (Proses Delete) (Func
         for genre, bookList in books.items():
             for book in bookList:
                 if book["name"].lower() == name.lower():
+                    if book["status"].lower() == "not available":
+                        print("\nBuku berstatus not available, hanya buku 'available' yang dapat dihapus.\n")
+                        break
                     bookList.remove(book)
                     print(f"\nBuku '{book['name']}' berhasil dihapus!\n")
                     found = True
@@ -154,7 +157,7 @@ def removeBook():                   # Remove Book function (Proses Delete) (Func
                 break
         
         if not found:    
-            print("\nBuku tidak ditemukan.\n")
+            print(f"\nBuku tidak ditemukan.\n")
         
         while True:
             repeat = input("Apakah anda ingin menghapus buku lain dari record? (ya/tidak): ").strip().lower()
@@ -172,10 +175,8 @@ def removeBook():                   # Remove Book function (Proses Delete) (Func
 def borrowBook():                   # Borrow Book function (Proses Update) (Function ini khusus untuk user "visitor")
     while True:
         displayBooks()
-        name = input("Masukkan nama buku yang ingin dipinjam: (tulis 'selesai' untuk kembali ke menu)")
-        if name.lower() == "selesai":
-            break
-        
+        name = input("Masukkan nama buku yang ingin dipinjam: ")
+                
         found = False
         for genre, bookList in books.items():
             for book in bookList:
@@ -185,7 +186,7 @@ def borrowBook():                   # Borrow Book function (Proses Update) (Func
                         book["status"] = "not available"
                         borrowedBooks.append(book)
                         print(f"\nBerhasil meminjam buku '{book['name']}'\n")
-                        return
+                        break
                     else:
                         print("\nMaaf, buku tidak tersedia.\n")
                     break
@@ -193,6 +194,16 @@ def borrowBook():                   # Borrow Book function (Proses Update) (Func
                 break
         if not found:
             print("\nBuku tidak ditemukan.\n")
+            
+        while True:
+            repeat = input("Apakah anda ingin meminjam buku lain? (ya/tidak): ").strip().lower()
+            if repeat == "ya":
+                break
+            elif repeat == "tidak":
+                print("\nKembali ke menu ...\n")
+                return
+            else:
+                print("Input tidak valid. Ketik 'ya' atau 'tidak'\n")
 
 
 
