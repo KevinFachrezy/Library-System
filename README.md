@@ -1,4 +1,4 @@
-# Library System For Capstone Project
+# Library System Project
 
 Project Library System adalah sebuah sistem sederhana yang menggambarkan konsep perpustakaan. Dalam sistem ini terdapat dua user yaitu Librarian dan Visitor yang dimana kedua user ini dapat berinteraksi layaknya perpustakaan fisik.
 
